@@ -1,0 +1,328 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Charity Project API",
+        "description": "This is the API documentation for managing charity projects and organizations.",
+        "contact": {
+            "email": "support@example.com"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "/api/"
+        }
+    ],
+    "paths": {
+        "/v1/charity-projects": {
+            "get": {
+                "tags": [
+                    "Charity Projects"
+                ],
+                "summary": "Get a list of charity projects",
+                "description": "Retrieves a list of charity projects with optional filters.",
+                "operationId": "427295d1043eceb1d88736f3a3d8bfac",
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Filter by project status (active, closed)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "active",
+                                "closed"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "launch_date",
+                        "in": "query",
+                        "description": "Filter by launch date (format: YYYY-MM-DD)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Number of items per page (between 3 and 10)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 10,
+                            "minimum": 3
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list of charity projects",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/CharityProject"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No charity projects found"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/v1/charity-projects/{slug}": {
+            "get": {
+                "tags": [
+                    "Charity Projects"
+                ],
+                "summary": "Get a charity project by slug",
+                "description": "Retrieves a charity project by its slug.",
+                "operationId": "0d53a62f998953c1c70473f5b99c7fcb",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "description": "Slug of the charity project",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A charity project",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "name": {
+                                            "type": "string",
+                                            "example": "Проект 1"
+                                        },
+                                        "slug": {
+                                            "type": "string",
+                                            "example": "proekt-1"
+                                        },
+                                        "short_description": {
+                                            "type": "string",
+                                            "example": "<p>Краткое описание проекта 1.</p>"
+                                        },
+                                        "status": {
+                                            "type": "string",
+                                            "example": "active"
+                                        },
+                                        "launch_date": {
+                                            "type": "string",
+                                            "format": "date",
+                                            "example": "2023-01-01"
+                                        },
+                                        "donation_amount": {
+                                            "type": "integer",
+                                            "example": 1000
+                                        },
+                                        "additional_description": {
+                                            "type": "string",
+                                            "example": "<p>Дополнительное описание проекта 1.</p>"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No project found"
+                    }
+                }
+            }
+        },
+        "/v1/donate": {
+            "post": {
+                "tags": [
+                    "Donations"
+                ],
+                "summary": "Создать пожертвование",
+                "operationId": "4e01fbfa5159aec8faa40c15f36dcb9e",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "charity_project_id",
+                                    "amount"
+                                ],
+                                "properties": {
+                                    "charity_project_id": {
+                                        "description": "ID проекта благотворительности",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "amount": {
+                                        "description": "Сумма пожертвования",
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 100
+                                    },
+                                    "donation_date": {
+                                        "description": "Дата пожертвования (по умолчанию текущее время)",
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2023-10-01T12:00:00Z"
+                                    },
+                                    "comment": {
+                                        "description": "Комментарий к пожертвованию",
+                                        "type": "string",
+                                        "example": "Спасибо за вашу поддержку!"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Donation successfully created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DonationResource"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No project found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No organizations found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to create donation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Failed to create donation"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Error message here"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "CharityProject": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Charity Project Name"
+                    },
+                    "status": {
+                        "type": "string",
+                        "example": "active"
+                    },
+                    "launch_date": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2023-01-01"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Description of the charity project"
+                    }
+                },
+                "type": "object"
+            },
+            "DonationResource": {
+                "properties": {
+                    "id": {
+                        "description": "ID пожертвования",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "charity_project_id": {
+                        "description": "ID проекта благотворительности",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "amount": {
+                        "description": "Сумма пожертвования",
+                        "type": "number",
+                        "format": "float",
+                        "example": 100
+                    },
+                    "donation_date": {
+                        "description": "Дата пожертвования",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2023-10-01T12:00:00Z"
+                    },
+                    "comment": {
+                        "description": "Комментарий к пожертвованию",
+                        "type": "string",
+                        "example": "Спасибо за вашу поддержку!"
+                    }
+                },
+                "type": "object"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Charity Projects",
+            "description": "Charity Projects"
+        },
+        {
+            "name": "Donations",
+            "description": "Donations"
+        }
+    ],
+    "security": [
+        {
+            "apiKey": []
+        }
+    ]
+}
