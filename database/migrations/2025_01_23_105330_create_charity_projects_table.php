@@ -12,10 +12,10 @@ class CreateCharityProjectsTable extends Migration
             $table->id();
             $table->string('name', 255);
             $table->string('slug', 128)->unique();
-            $table->text('short_description');
+            $table->string('short_description', 5000);
             $table->enum('status', ['draft', 'active', 'closed']);
             $table->timestamp('launch_date');
-            $table->text('additional_description')->nullable();
+            $table->string('additional_description', 50000)->nullable();
             $table->unsignedInteger('donation_amount')->default(0);
             $table->integer('sort_order')->default(1000000);
             $table->timestamps();
