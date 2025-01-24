@@ -34,7 +34,6 @@ http://localhost:9000/api/documentation
 
 php artisan test
 
-http://localhost:9000/api/documentation
 
 ## License
 
