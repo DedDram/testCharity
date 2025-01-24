@@ -2,7 +2,7 @@
 
 ## Clone the Repository
 
-git clone https://github.com/DedDram/testJob
+git clone https://github.com/DedDram/testCharity
 
 cd your-repository
 
@@ -27,6 +27,12 @@ docker exec -it laravel_app php artisan migrate
 docker exec -it laravel_app php artisan db:seed
 
 ## Swagger
+
+http://localhost:9000/api/documentation
+
+## Test
+
+php artisan test
 
 http://localhost:9000/api/documentation
 
